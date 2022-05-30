@@ -12,7 +12,7 @@
 
 # Architecture of the project :-
 
-Global Variables :- 
+**Global Variables** :- 
 1. Owner -> The real owner who deployed the contract.
 2. Start Time -> The time when auction starts.
 3. End Time -> The time when the auction ends.
@@ -22,7 +22,7 @@ Global Variables :-
 7. Bidders -> key value pair to keep track of bidders.
 
 
-Functions  :- 
+**Functions**  :- 
 1. Cancel Auction
 2. placeBid
 3. Finalize
