@@ -49,7 +49,7 @@ contract Auction {
     // modifier for the auction is ended.
     modifier isEnded {
         require(block.number <= endTime);
-        _;
+        _;    
     }
 
 
@@ -68,7 +68,7 @@ contract Auction {
     }
 
     // function to bid in auction
-    function bid() payable public notOwner started isEnded {
+    function placeBid() payable public notOwner started isEnded {
         require(auctionState == State.Running);
         require(msg.value >= 1 ether);
 
