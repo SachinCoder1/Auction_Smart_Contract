@@ -2,19 +2,19 @@
 pragma solidity ^0.8.7;
 
 contract Auction {
-    address payable public owner;
+    address payable public owner; // owner of this smart contract.
     uint public startTime; // Start time of auction;
     uint public endTime; // End time of auction;
 
     enum State {Started, Running, Ended, Cancelled}
     State public auctionState;
 
-    uint public highestPayableBid;
-    uint public bidInc;
+    uint public highestPayableBid; // highest payable bid ( selling price )
+    uint public bidInc; // incrementing bid
 
-    address payable public highestBidder;
+    address payable public highestBidder; // the person who have bidded highest amount.
 
-    mapping(address => uint) public bidders;
+    mapping(address => uint) public bidders; // all bidders with their address and value.
 
 
     //  Constructor
@@ -94,7 +94,7 @@ contract Auction {
     function finalize() public {
         require(auctionState == State.Cancelled || block.number >= endTime);
         require(msg.sender == owner || bidders[msg.sender] > 0);
-
+        
         address payable person;
         uint value;
 
@@ -121,7 +121,4 @@ contract Auction {
         person.transfer(value);
 
     }
-
-
-
 }
