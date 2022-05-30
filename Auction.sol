@@ -9,9 +9,8 @@ contract Auction {
     enum State {Started, Running, Ended, Cancelled}
     State public auctionState;
 
-    uint public highestBid;
     uint public highestPayableBid;
-    uint public bidAmount;
+    uint public bidInc;
 
     address payable public highestBidder;
 
@@ -27,7 +26,7 @@ contract Auction {
         startTime = block.number;
         endTime = startTime + 240;
 
-        bidAmount = 1 ether;
+        bidInc = 1 ether;
     }
 
 
@@ -59,8 +58,38 @@ contract Auction {
         auctionState = State.Cancelled;
     }
 
+    // 
+    function min(uint first, uint second) pure private returns(uint){
+        if(first <= second){
+            return first;
+        }else{
+            return second;
+        }
+    }
 
+    // function to bid in auction
+    function bid() payable public notOwner started isEnded {
+        require(auctionState == State.Running);
+        require(msg.value >= 1 ether);
 
+        // current bid
+        uint currentBid = bidders[msg.sender] + bidInc;
+
+        // The current bid should be always greater then highest person's bid.
+        require(currentBid > highestPayableBid);
+
+        bidders[msg.sender] = currentBid;
+
+        if(currentBid < bidders[highestBidder]){
+            highestPayableBid = min(currentBid+bidInc, bidders[highestBidder]);
+        }else {
+            highestPayableBid = min(currentBid, bidders[highestBidder] +bidInc);
+            highestBidder = payable(msg.sender);
+        }
+
+    }
+
+    
 
 
 
