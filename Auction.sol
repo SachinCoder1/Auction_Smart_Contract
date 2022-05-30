@@ -73,7 +73,7 @@ contract Auction {
         require(msg.value >= 1 ether);
 
         // current bid
-        uint currentBid = bidders[msg.sender] + bidInc;
+        uint currentBid = bidders[msg.sender] + msg.value;
 
         // The current bid should be always greater then highest person's bid.
         require(currentBid > highestPayableBid);
@@ -90,6 +90,37 @@ contract Auction {
     }
 
     
+    // auction winner decision.
+    function finalize() public {
+        require(auctionState == State.Cancelled || block.number >= endTime);
+        require(msg.sender == owner || bidders[msg.sender] > 0);
+
+        address payable person;
+        uint value;
+
+        if(auctionState == State.Cancelled) {
+            person = payable(msg.sender);
+            value = bidders[msg.sender];
+
+        }else{
+            if(msg.sender == owner){
+                person = owner;
+                value = highestPayableBid; 
+            }else{
+                if(msg.sender == highestBidder){
+                    person = highestBidder;
+                    value = bidders[highestBidder] - highestPayableBid;
+                }else{
+                    person = payable(msg.sender);
+                    value = bidders[msg.sender];
+                }
+            }
+        }
+
+        bidders[msg.sender] = 0;
+        person.transfer(value);
+
+    }
 
 
 
